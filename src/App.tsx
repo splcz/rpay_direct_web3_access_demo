@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useWallet } from '@/hooks/useWallet'
 import { usePermit } from '@/hooks/usePermit'
@@ -24,13 +23,6 @@ function App() {
     queryFn: () => getWeb3PayConfig({ coin: TOKEN.USDC_ERC20 }),
     enabled: isConnected,
   })
-
-  // 打印配置响应
-  useEffect(() => {
-    if (configData) {
-      console.log('getConfig 响应:', configData)
-    }
-  }, [configData])
 
   const handleDisconnect = () => {
     reset()
@@ -90,7 +82,7 @@ function App() {
                   提交中...
                 </span>
               ) : (
-                '授权（签署 Permit）'
+                '签署 Permit'
               )}
             </button>
 

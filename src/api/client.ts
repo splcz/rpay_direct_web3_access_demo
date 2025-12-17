@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 // API 配置
-// 开发环境使用代理，生产环境使用实际地址
-const BASE_URL = import.meta.env.DEV ? '' : 'http://api.rp-2023app.com'
+// 开发环境用 Vite proxy，生产环境用 Vercel rewrites，都使用相对路径
+const BASE_URL = ''
 const AUTH_TOKEN = '48bd9a71-4289-450d-b005-620726617fba'
 
 // 创建 axios 实例
