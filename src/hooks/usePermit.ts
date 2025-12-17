@@ -53,7 +53,6 @@ export function usePermit() {
   // 轮询 getPermit 获取结果
   const {
     data: permitResultData,
-    isLoading: isPolling,
     error: pollingError,
   } = useQuery({
     queryKey: [WEB3PAY_API.getPermit, sn],
@@ -167,6 +166,12 @@ export function usePermit() {
     || (submitError instanceof Error ? submitError.message : null)
     || (pollingError instanceof Error ? pollingError.message : null)
 
+  // 只要 sn 存在且状态还在轮询中（NEW 或 SIGNING），就认为在提交中
+  const isPolling = !!sn && (
+    permitResultData?.status === PERMIT_STATUS.NEW || 
+    permitResultData?.status === PERMIT_STATUS.SIGNING ||
+    permitResultData === undefined // 还没拿到第一次结果
+  )
   const isSubmitting = isSubmitPermit || isPolling
   const isSuccess = permitResultData?.status === PERMIT_STATUS.SUCCESS
 

@@ -3,7 +3,7 @@ import axios from 'axios'
 // API 配置
 // 开发环境用 Vite proxy，生产环境用 Vercel rewrites，都使用相对路径
 const BASE_URL = ''
-const AUTH_TOKEN = '48bd9a71-4289-450d-b005-620726617fba'
+const AUTH_TOKEN = 'cb93baf1-5342-4f30-8684-a5ebcbd41418'
 
 // 创建 axios 实例
 export const apiClient = axios.create({

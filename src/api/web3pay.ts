@@ -6,7 +6,10 @@ export const WEB3PAY_API = {
   getConfig: '/api/v2/user/web3pay/getConfig',
   permit: '/api/v2/user/web3pay/permit',
   getPermit: '/api/v2/user/web3pay/getPermit',
+  payOrder: '/api/v1/pay/web3pay/payOrder'
 } as const
+
+
 
 // ============ Types ============
 export interface GetConfigParams {
@@ -50,9 +53,22 @@ export const PERMIT_STATUS = {
 } as const
 
 export type PermitStatusType = typeof PERMIT_STATUS[keyof typeof PERMIT_STATUS]
-
 export interface GetPermitResponse {
   status: PermitStatusType
+  [key: string]: unknown
+}
+
+export interface PayOrderParams {
+  uid?: number
+  varietyCode: string
+  payOrderSn: string
+  businessType?: number
+  businessSn?: string
+  tid?: string
+  amount: string
+}
+
+export interface PayOrderResponse {
   [key: string]: unknown
 }
 
@@ -67,4 +83,8 @@ export const submitPermit = (params: PermitParams): Promise<PermitResponse> => {
 
 export const getPermit = (params: GetPermitParams): Promise<GetPermitResponse> => {
   return apiClient.post(WEB3PAY_API.getPermit, params)
+}
+
+export const payOrder = (params: PayOrderParams): Promise<PayOrderResponse> => {
+  return apiClient.post(WEB3PAY_API.payOrder, params)
 }
