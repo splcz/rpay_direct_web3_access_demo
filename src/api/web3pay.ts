@@ -3,9 +3,9 @@ import { type TokenType } from '@/constants/enums'
 
 // ============ URL ============
 export const WEB3PAY_API = {
-  getConfig: '/api/v2/user/web3pay/getConfig',
-  permit: '/api/v2/user/web3pay/permit',
-  getPermit: '/api/v2/user/web3pay/getPermit',
+  getConfig: '/api/v1/user/web3pay/getConfig',
+  permit: '/api/v1/user/web3pay/permit',
+  getPermit: '/api/v1/user/web3pay/getPermit',
   payOrder: '/api/v1/pay/web3pay/payOrder'
 } as const
 

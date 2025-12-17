@@ -27,7 +27,8 @@ export function PermitResultCard({ result }: PermitResultProps) {
   const handlePay = () => {
     handlePayOrder({
       payOrderSn: '123456',
-      varietyCode: TOKEN.USDC_ERC20,
+      varietyCode: TOKEN.USDC_ERC20.split('_')[0],
+      businessSn: '123456',
       amount: '0.01',
     })
   }

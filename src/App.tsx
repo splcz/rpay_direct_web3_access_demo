@@ -68,7 +68,7 @@ function App() {
             {/* 授权按钮 */}
             <button
               onClick={handleSignPermit}
-              disabled={isSigning || !configData?.proxyAddress}
+              disabled={isSigning || isSubmitting || !configData?.proxyAddress}
               className="w-full px-6 py-4 bg-linear-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 disabled:from-slate-600 disabled:to-slate-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 active:scale-95 disabled:cursor-not-allowed"
             >
               {isSigning ? (
