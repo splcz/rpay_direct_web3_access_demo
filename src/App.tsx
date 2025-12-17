@@ -7,23 +7,19 @@ import { TOKEN } from '@/constants/enums'
 import { ConnectButton } from '@/components/ConnectButton'
 import { PermitResultCard } from '@/components/PermitResult'
 import { Spinner } from '@/components/Spinner'
+import { type Address } from 'viem'
 
 // ============ Permit 配置 ============
 const PERMIT_AMOUNT = '1'           // 授权金额（USDC）
 const PERMIT_DURATION = 3600         // 有效期（秒），3600 = 1小时
-const PERMIT_SPENDER = '0x0000000000000000000000000000000000000001' as const  // 被授权地址
 // ====================================
 
 function App() {
   const { address, isConnected, isPending, connect, disconnect } = useWallet()
-  const { isSigning, result, error, signPermit, reset } = usePermit()
+  const { isSigning, isSubmitting, result, error, signPermit, reset, isSuccess } = usePermit()
   
   // 使用 react-query 获取配置（仅在钱包连接时启用）
-  const { 
-    data: config, 
-    isLoading: configLoading,
-    error: configError,
-  } = useQuery({
+  const { data: configData, isLoading: configLoading } = useQuery({
     queryKey: [WEB3PAY_API.getConfig, TOKEN.USDC_ERC20],
     queryFn: () => getWeb3PayConfig({ coin: TOKEN.USDC_ERC20 }),
     enabled: isConnected,
@@ -31,16 +27,10 @@ function App() {
 
   // 打印配置响应
   useEffect(() => {
-    if (config) {
-      console.log('getConfig 响应:', config)
+    if (configData) {
+      console.log('getConfig 响应:', configData)
     }
-  }, [config])
-
-  useEffect(() => {
-    if (configError) {
-      console.error('getConfig 失败:', configError)
-    }
-  }, [configError])
+  }, [configData])
 
   const handleDisconnect = () => {
     reset()
@@ -48,10 +38,12 @@ function App() {
   }
 
   const handleSignPermit = () => {
+    if (!configData?.proxyAddress) return
     signPermit({
       amount: PERMIT_AMOUNT,
       duration: PERMIT_DURATION,
-      spender: PERMIT_SPENDER,
+      spender: configData.proxyAddress as Address,
+      coin: TOKEN.USDC_ERC20,
     })
   }
 
@@ -84,7 +76,7 @@ function App() {
             {/* 授权按钮 */}
             <button
               onClick={handleSignPermit}
-              disabled={isSigning}
+              disabled={isSigning || !configData?.proxyAddress}
               className="w-full px-6 py-4 bg-linear-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 disabled:from-slate-600 disabled:to-slate-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 active:scale-95 disabled:cursor-not-allowed"
             >
               {isSigning ? (
@@ -92,13 +84,18 @@ function App() {
                   <Spinner />
                   请在钱包中确认签名...
                 </span>
+              ) : isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Spinner />
+                  提交中...
+                </span>
               ) : (
                 '授权（签署 Permit）'
               )}
             </button>
 
             {/* 签名结果 */}
-            {result && <PermitResultCard result={result} />}
+            {isSuccess && result && <PermitResultCard result={result} />}
 
             {/* 错误提示 */}
             {error && (

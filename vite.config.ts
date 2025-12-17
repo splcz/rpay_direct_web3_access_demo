@@ -14,7 +14,6 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'http://api.rp-2023app.com',
         target: 'https://api.rp-2025test.com/',
         changeOrigin: true,
       },

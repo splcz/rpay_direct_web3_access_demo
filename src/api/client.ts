@@ -25,10 +25,25 @@ apiClient.interceptors.request.use(
   }
 )
 
-// 响应拦截器 - 统一处理响应
+// 通用响应结构
+interface ApiResponse<T = unknown> {
+  code: number
+  data: T
+  level: string | null
+  msg: string
+  success: boolean
+}
+
+// 响应拦截器 - 统一处理响应，直接返回 data 字段
 apiClient.interceptors.response.use(
-  (response) => {
-    return response.data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (response): any => {
+    const res = response.data as ApiResponse
+    if (res.success && res.code === 200) {
+      return res.data
+    }
+    // 业务错误
+    return Promise.reject(new Error(res.msg || 'Unknown error'))
   },
   (error) => {
     console.error('API Error:', error.response?.data || error.message)
