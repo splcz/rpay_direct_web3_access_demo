@@ -1,4 +1,4 @@
-import type { PermitResult } from '../constants/permit'
+import type { PermitResult } from '@/constants/permit'
 
 interface PermitResultProps {
   result: PermitResult

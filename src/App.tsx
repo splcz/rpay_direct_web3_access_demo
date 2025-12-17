@@ -1,8 +1,12 @@
-import { useWallet } from './hooks/useWallet'
-import { usePermit } from './hooks/usePermit'
-import { ConnectButton } from './components/ConnectButton'
-import { PermitResultCard } from './components/PermitResult'
-import { Spinner } from './components/Spinner'
+import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useWallet } from '@/hooks/useWallet'
+import { usePermit } from '@/hooks/usePermit'
+import { getWeb3PayConfig, WEB3PAY_API } from '@/api/web3pay'
+import { TOKEN } from '@/constants/enums'
+import { ConnectButton } from '@/components/ConnectButton'
+import { PermitResultCard } from '@/components/PermitResult'
+import { Spinner } from '@/components/Spinner'
 
 // ============ Permit 配置 ============
 const PERMIT_AMOUNT = '1'           // 授权金额（USDC）
@@ -13,6 +17,30 @@ const PERMIT_SPENDER = '0x0000000000000000000000000000000000000001' as const  //
 function App() {
   const { address, isConnected, isPending, connect, disconnect } = useWallet()
   const { isSigning, result, error, signPermit, reset } = usePermit()
+  
+  // 使用 react-query 获取配置（仅在钱包连接时启用）
+  const { 
+    data: config, 
+    isLoading: configLoading,
+    error: configError,
+  } = useQuery({
+    queryKey: [WEB3PAY_API.getConfig, TOKEN.USDC_ERC20],
+    queryFn: () => getWeb3PayConfig({ coin: TOKEN.USDC_ERC20 }),
+    enabled: isConnected,
+  })
+
+  // 打印配置响应
+  useEffect(() => {
+    if (config) {
+      console.log('getConfig 响应:', config)
+    }
+  }, [config])
+
+  useEffect(() => {
+    if (configError) {
+      console.error('getConfig 失败:', configError)
+    }
+  }, [configError])
 
   const handleDisconnect = () => {
     reset()
@@ -44,6 +72,14 @@ function App() {
               <p className="text-sm text-slate-400 mb-1">已连接钱包</p>
               <p className="text-cyan-400 font-mono text-sm break-all">{address}</p>
             </div>
+
+            {/* 配置加载中 */}
+            {configLoading && (
+              <div className="flex items-center justify-center gap-2 text-slate-400 text-sm">
+                <Spinner className="h-4 w-4" />
+                正在获取配置...
+              </div>
+            )}
 
             {/* 授权按钮 */}
             <button

@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.12",
     "@walletconnect/ethereum-provider": "~2.21.1",
+    "axios": "^1.13.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "viem": "^2.42.1",
